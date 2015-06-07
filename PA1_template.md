@@ -45,21 +45,33 @@ mean(sums); median(sums)
 
 ## What is the average daily activity pattern?
 The "split-apply" grammer is useful here again.  
-First calculate means across dates for each interval.
+First calculate means across dates for each interval and search for the maximum.
 
 ```r
 means_within_day <- unlist(lapply(split(mydata$steps, mydata$interval), 
                            mean, na.rm = TRUE))
 ```
 
-The x vector for the required plot is obtained using the "unique" function.
+The x vector for the required plot is stored in the attributes of this variable.
 
 ```r
-plot(unique(mydata$interval), means_within_day, type = "l",
+plot(unlist(attributes(means_within_day)), means_within_day, type = "l",
      xlab = "Interval", ylab = "Steps")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
+
+Finally, calculate the maximum.
+
+```r
+means_within_day[which.max(means_within_day)]
+```
+
+```
+##      835 
+## 206.1698
+```
+
 
 ## Imputing missing values
 ### 1. total number of missing values
@@ -101,7 +113,7 @@ sums2 <- unlist(lapply(steps_day2, sum, na.rm = TRUE))
 hist(sums2, main = "Total steps per day (with fill-in for NAs)", xlab = "Steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png) 
 
 You can see how important it is to address NAs!
 Now it looks more normal.
@@ -155,4 +167,4 @@ p <- ggplot(means_wd_wn, aes(interval, mean_steps)) + geom_line()
 p + facet_grid(weekday ~ .)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png) 
